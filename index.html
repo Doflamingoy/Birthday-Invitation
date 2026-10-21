@@ -172,7 +172,6 @@
   whereLink.textContent = PARTY.where;
   whereLink.href = PARTY.mapLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(PARTY.where)}`;
   whereLink.setAttribute("aria-label", `${PARTY.where} (opens in Google Maps)`);
-  document.getElementById("bring").textContent = PARTY.bring;
   document.getElementById("ageNum").textContent = PARTY.age;
   document.title = `You're invited to ${PARTY.name}'s birthday ride!`;
 
