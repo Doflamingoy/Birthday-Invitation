@@ -75,6 +75,10 @@
   .row { display: grid; grid-template-columns: 64px 1fr; gap: 8px; align-items: baseline; }
   .row dt { font-size: 1rem; opacity: .8; }
   .row dd { margin: 0; font-weight: 800; font-size: 1.2rem; }
+  .row dd a { color: #fff; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px; }
+  .row dd a:hover { text-decoration-style: dashed; }
+  .row dd a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: 2px; }
+  .row dd a::after { content: " ↗"; font-weight: 600; }
   .rsvp { padding: 14px 28px 30px; }
   label { display: block; font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; }
   input {
@@ -132,8 +136,7 @@
   <section class="details">
     <dl>
       <div class="row"><dt>When</dt><dd id="when">Saturday, November 14 · 7:00 PM</dd></div>
-      <div class="row"><dt>Where</dt><dd id="where">123 Throttle Road, Your City</dd></div>
-      <div class="row"><dt>Bring</dt><dd id="bring">Your bike, your boots, your crew</dd></div>
+      <div class="row"><dt>Where</dt><dd><a id="where" href="#" target="_blank" rel="noopener">123 Throttle Road, Your City</a></dd></div>
     </dl>
   </section>
 
@@ -152,20 +155,23 @@
 <script>
   // ====== EDIT THESE ======
   const PARTY = {
-    hostEmail: "justin.mingoy@gmail.com",          // RSVPs are emailed here
+    hostEmail: "jasharadan@gmail.com",          // RSVPs are emailed here
     name: "Ernite",
     age: 60,                                // the speedometer needle points here
     tagline: "Riding into 60!",
-    when: "Saturday, November 14 · 7:00 PM",
-    where: "123 Throttle Road, Your City",
-    bring: "Your bike, your boots, your crew"
+    when: "November 14,2026",
+    where: "Kiara's Villa 1 Private Resort",
+    mapLink: "https://maps.app.goo.gl/rvdRqZFwu7JbadbaA"
   };
   // ========================
 
   document.getElementById("who").textContent = PARTY.name;
   document.getElementById("tagline").textContent = PARTY.tagline;
   document.getElementById("when").textContent = PARTY.when;
-  document.getElementById("where").textContent = PARTY.where;
+  const whereLink = document.getElementById("where");
+  whereLink.textContent = PARTY.where;
+  whereLink.href = PARTY.mapLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(PARTY.where)}`;
+  whereLink.setAttribute("aria-label", `${PARTY.where} (opens in Google Maps)`);
   document.getElementById("bring").textContent = PARTY.bring;
   document.getElementById("ageNum").textContent = PARTY.age;
   document.title = `You're invited to ${PARTY.name}'s birthday ride!`;
