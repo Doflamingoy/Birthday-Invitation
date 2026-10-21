@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>You're invited!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Barlow+Condensed:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #2A2A2A;
+    --card: #0A0A0A;
+    --chrome: #F2F2F2;
+    --muted: #9A9A9A;
+    --red: #E10600;
+    --red-dark: #8F0400;
+    --line: #2E2E2E;
+    --field: #161616;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #D9D6D3; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background:
+      repeating-linear-gradient(115deg, transparent 0 22px, rgba(0,0,0,.08) 22px 30px),
+      var(--bg);
+    color: var(--chrome);
+    font-family: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+    display: grid;
+    place-items: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  }
+  .card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--card);
+    border-radius: 6px 6px 22px 22px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  }
+  .flag {
+    height: 18px;
+    background:
+      conic-gradient(var(--chrome) 25%, var(--card) 0 50%, var(--chrome) 0 75%, var(--card) 0)
+      0 0 / 18px 18px;
+  }
+  .top { padding: 26px 28px 8px; text-align: center; }
+  .kicker { font-size: 1.15rem; letter-spacing: .04em; color: var(--muted); margin: 0; }
+  h1 {
+    font-family: "Racing Sans One", Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.8rem, 12vw, 3.8rem);
+    line-height: 1;
+    margin: 6px 0 0;
+    color: var(--chrome);
+    transform: skewX(-8deg);
+  }
+  .gauge { display: block; width: 100%; max-width: 280px; margin: 14px auto 0; }
+  .gauge .num { font-family: "Racing Sans One", Impact, sans-serif; fill: var(--chrome); }
+  .gauge .unit { fill: var(--muted); font-family: "Barlow Condensed", sans-serif; font-weight: 600; letter-spacing: .08em; }
+  #needle { transform-origin: 140px 140px; transition: transform 1.6s cubic-bezier(.2,1.4,.4,1); }
+  .tagline { font-size: 1.35rem; font-weight: 600; margin: 4px 0 18px; }
+  .details {
+    background: var(--red);
+    color: #fff;
+    padding: 18px 28px;
+    transform: skewY(-3deg);
+    margin: 10px 0 18px;
+  }
+  .details dl { transform: skewY(3deg); margin: 0; display: grid; gap: 8px; }
+  .row { display: grid; grid-template-columns: 64px 1fr; gap: 8px; align-items: baseline; }
+  .row dt { font-size: 1rem; opacity: .8; }
+  .row dd { margin: 0; font-weight: 800; font-size: 1.2rem; }
+  .rsvp { padding: 14px 28px 30px; }
+  label { display: block; font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; }
+  input {
+    width: 100%; font: inherit; font-size: 1.2rem;
+    padding: 12px 14px; border-radius: 8px;
+    border: 2px solid var(--line); background: var(--field); color: var(--chrome);
+  }
+  input::placeholder { color: var(--muted); }
+  input:focus { border-color: var(--red); }
+  input:focus-visible, button:focus-visible { outline: 3px solid var(--chrome); outline-offset: 2px; }
+  .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  button {
+    font: inherit; font-weight: 800; font-size: 1.2rem;
+    padding: 13px 10px; border-radius: 8px; cursor: pointer;
+    border: 2px solid var(--red); color: #fff;
+    transition: background .15s, transform .08s;
+  }
+  button:active { transform: scale(.97); }
+  button:disabled { opacity: .6; cursor: wait; }
+  .yes { background: var(--red); }
+  .yes:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .no { background: transparent; color: var(--chrome); border-color: var(--line); }
+  .no:hover { border-color: var(--muted); }
+  .msg { margin: 14px 0 0; min-height: 1.4em; font-weight: 600; font-size: 1.1rem; }
+  .msg.error { color: #FF4D47; }
+  .done { text-align: center; padding: 6px 0; }
+  .done p:first-child { font-family: "Racing Sans One", Impact, sans-serif; font-size: 2.2rem; margin: 0 0 6px; color: var(--red); }
+  .done p { margin: 0; font-size: 1.2rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="flag" aria-hidden="true"></div>
+  <section class="top">
+    <p class="kicker">Start your engines for</p>
+    <h1 id="who">Ernite</h1>
+
+    <svg class="gauge" viewBox="0 0 280 170" role="img" aria-labelledby="gaugeLabel">
+      <title id="gaugeLabel">Speedometer showing the new age</title>
+      <path d="M30 140 A110 110 0 0 1 250 140" fill="none" stroke="#2E2E2E" stroke-width="14" stroke-linecap="round"/>
+      <path d="M205 49 A110 110 0 0 1 250 140" fill="none" stroke="#E10600" stroke-width="14" stroke-linecap="round"/>
+      <g id="ticks" stroke="#9A9A9A" stroke-width="2"></g>
+      <g id="needle">
+        <line x1="140" y1="140" x2="140" y2="48" stroke="#E10600" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <circle cx="140" cy="140" r="10" fill="#F2F2F2"/>
+      <text class="num" id="ageNum" x="140" y="112" text-anchor="middle" font-size="40">60</text>
+      <text class="unit" x="140" y="166" text-anchor="middle" font-size="13">YEARS</text>
+    </svg>
+
+    <p class="tagline" id="tagline">Riding into 60!</p>
+  </section>
+
+  <section class="details">
+    <dl>
+      <div class="row"><dt>When</dt><dd id="when">Saturday, November 14 · 7:00 PM</dd></div>
+      <div class="row"><dt>Where</dt><dd id="where">123 Throttle Road, Your City</dd></div>
+      <div class="row"><dt>Bring</dt><dd id="bring">Your bike, your boots, your crew</dd></div>
+    </dl>
+  </section>
+
+  <section class="rsvp" id="rsvp">
+    <label for="guest">Your name</label>
+    <input id="guest" type="text" autocomplete="name" placeholder="Type your name" required>
+    <div class="buttons">
+      <button class="yes" id="yesBtn" type="button">Yes, I'm riding in</button>
+      <button class="no" id="noBtn" type="button">Can't make it</button>
+    </div>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+  </section>
+  <div class="flag" aria-hidden="true"></div>
+</main>
+
+<script>
+  // ====== EDIT THESE ======
+  const PARTY = {
+    hostEmail: "justin.mingoy@gmail.com",          // RSVPs are emailed here
+    name: "Ernite",
+    age: 60,                                // the speedometer needle points here
+    tagline: "Riding into 60!",
+    when: "Saturday, November 14 · 7:00 PM",
+    where: "123 Throttle Road, Your City",
+    bring: "Your bike, your boots, your crew"
+  };
+  // ========================
+
+  document.getElementById("who").textContent = PARTY.name;
+  document.getElementById("tagline").textContent = PARTY.tagline;
+  document.getElementById("when").textContent = PARTY.when;
+  document.getElementById("where").textContent = PARTY.where;
+  document.getElementById("bring").textContent = PARTY.bring;
+  document.getElementById("ageNum").textContent = PARTY.age;
+  document.title = `You're invited to ${PARTY.name}'s birthday ride!`;
+
+  // Speedometer: ticks + needle sweep to the age
+  const maxGauge = Math.max(100, Math.ceil(PARTY.age / 10) * 10 + 10);
+  const ticks = document.getElementById("ticks");
+  for (let i = 0; i <= 10; i++) {
+    const a = (Math.PI) * (1 - i / 10);
+    const x1 = 140 + Math.cos(a) * 92, y1 = 140 - Math.sin(a) * 92;
+    const x2 = 140 + Math.cos(a) * 82, y2 = 140 - Math.sin(a) * 82;
+    const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", x1); l.setAttribute("y1", y1);
+    l.setAttribute("x2", x2); l.setAttribute("y2", y2);
+    ticks.appendChild(l);
+  }
+  const needle = document.getElementById("needle");
+  needle.style.transform = "rotate(-90deg)";
+  const target = -90 + 180 * Math.min(PARTY.age, maxGauge) / maxGauge;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    needle.style.transform = `rotate(${target}deg)`;
+  }));
+
+  const input = document.getElementById("guest");
+  const msg = document.getElementById("msg");
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+
+  function setMsg(text, isError) {
+    msg.textContent = text;
+    msg.className = "msg" + (isError ? " error" : "");
+  }
+
+  async function rsvp(attending) {
+    const guest = input.value.trim();
+    if (!guest) { setMsg("Enter your name first.", true); input.focus(); return; }
+
+    yesBtn.disabled = noBtn.disabled = true;
+    setMsg("Sending your RSVP…");
+
+    const answer = attending ? "Yes, coming" : "Can't make it";
+    const subject = `RSVP for ${PARTY.name}'s birthday: ${guest} — ${answer}`;
+
+    try {
+      const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(PARTY.hostEmail)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ _subject: subject, Guest: guest, RSVP: answer, _template: "table", _captcha: "false" })
+      });
+      const data = await res.json();
+      if (!res.ok || String(data.success) !== "true") throw new Error(data.message || "Send failed");
+      showDone(guest, attending);
+    } catch (err) {
+      const body = `Hi! ${guest} here. RSVP: ${answer}.`;
+      window.location.href = `mailto:${PARTY.hostEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      setMsg("Couldn't send automatically, so your email app is opening. Hit send there to RSVP.", true);
+      yesBtn.disabled = noBtn.disabled = false;
+    }
+  }
+
+  function showDone(guest, attending) {
+    document.getElementById("rsvp").innerHTML = `
+      <div class="done">
+        <p>${attending ? "See you on the road!" : "You'll be missed!"}</p>
+        <p></p>
+      </div>`;
+    document.querySelector(".done p:last-child").textContent =
+      attending ? `Thanks, ${guest}. ${PARTY.name} got your RSVP.` : `Thanks for letting ${PARTY.name} know, ${guest}.`;
+  }
+
+  yesBtn.addEventListener("click", () => rsvp(true));
+  noBtn.addEventListener("click", () => rsvp(false));
+  input.addEventListener("keydown", e => { if (e.key === "Enter") rsvp(true); });
+</script>
+</body>
+</html>
