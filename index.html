@@ -79,6 +79,9 @@
   .row dd a:hover { text-decoration-style: dashed; }
   .row dd a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; border-radius: 2px; }
   .row dd a::after { content: " ↗"; font-weight: 600; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .swatch { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch i { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; display: inline-block; flex: none; }
   .rsvp { padding: 14px 28px 30px; }
   label { display: block; font-weight: 600; font-size: 1.15rem; margin-bottom: 8px; }
   input {
@@ -135,8 +138,9 @@
 
   <section class="details">
     <dl>
-      <div class="row"><dt>When</dt><dd id="when">Saturday, November 14 · 7:00 PM</dd></div>
+      <div class="row"><dt>When</dt><dd id="when">November 14, 2026 · 3:30 PM</dd></div>
       <div class="row"><dt>Where</dt><dd><a id="where" href="#" target="_blank" rel="noopener">123 Throttle Road, Your City</a></dd></div>
+      <div class="row"><dt>Wear</dt><dd id="wear" class="swatches"></dd></div>
     </dl>
   </section>
 
@@ -159,19 +163,35 @@
     name: "Ernite",
     age: 60,                                // the speedometer needle points here
     tagline: "Riding into 60!",
-    when: "November 14,2026",
+    when: "November 14, 2026",
+    time: "3:30 PM",
     where: "Kiara's Villa 1 Private Resort",
+    wear: [                                 // dress-code colors: [name, color]
+      ["Cream", "#F3E9D2"],
+      ["Beige", "#D8C3A0"],
+      ["Navy blue", "#1F2A5A"]
+    ],
     mapLink: "https://maps.app.goo.gl/rvdRqZFwu7JbadbaA"
   };
   // ========================
 
   document.getElementById("who").textContent = PARTY.name;
   document.getElementById("tagline").textContent = PARTY.tagline;
-  document.getElementById("when").textContent = PARTY.when;
+  document.getElementById("when").textContent = PARTY.time ? `${PARTY.when} · ${PARTY.time}` : PARTY.when;
   const whereLink = document.getElementById("where");
   whereLink.textContent = PARTY.where;
   whereLink.href = PARTY.mapLink || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(PARTY.where)}`;
   whereLink.setAttribute("aria-label", `${PARTY.where} (opens in Google Maps)`);
+  const wearEl = document.getElementById("wear");
+  PARTY.wear.forEach(([label, color]) => {
+    const span = document.createElement("span");
+    span.className = "swatch";
+    const dot = document.createElement("i");
+    dot.style.background = color;
+    dot.setAttribute("aria-hidden", "true");
+    span.append(dot, label);
+    wearEl.appendChild(span);
+  });
   document.getElementById("ageNum").textContent = PARTY.age;
   document.title = `You're invited to ${PARTY.name}'s birthday ride!`;
 
@@ -234,7 +254,7 @@
   function showDone(guest, attending) {
     document.getElementById("rsvp").innerHTML = `
       <div class="done">
-        <p>${attending ? "See you on the road!" : "You'll be missed!"}</p>
+        <p>${attending ? "See you on the road!" : "Catch you on the next ride!"}</p>
         <p></p>
       </div>`;
     document.querySelector(".done p:last-child").textContent =
